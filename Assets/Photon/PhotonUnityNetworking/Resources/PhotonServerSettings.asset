@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3758f8f58fdef43803eb9be1df0608, type: 3}
+  m_Name: PhotonServerSettings
+  m_EditorClassIdentifier: 
+  AppSettings:
+    AppIdRealtime: 5acea15b-0853-4b6b-8c19-47bcb42960e4
+    AppIdFusion: 
+    AppIdChat: 74f1b2f5-5031-47a3-bffa-3ddc2f5a7cf9
+    AppIdVoice: 
+    AppVersion: 0
+    UseNameServer: 1
+    FixedRegion: in
+    Server: 
+    Port: 0
+    ProxyServer: 
+    Protocol: 0
+    EnableProtocolFallback: 1
+    AuthMode: 0
+    EnableLobbyStatistics: 0
+    NetworkLogging: 1
+  DevRegion: in
+  PunLogging: 2
+  EnableSupportLogger: 0
+  RunInBackground: 1
+  StartInOfflineMode: 0
+  RpcList:
+  - ClickRpc
+  - DestroyRpc
+  - DestroySpaceship
+  - Fire
+  - RespawnSpaceship
+  - RPC_Collision
+  - CreatePlayer
+  - RPC_LoadedGameScene
+  - RPC_GetTeam
+  - RPC_SentTeam
+  - AddMesh
+  - RPC_InvokingFunc
+  - MonoLine
+  - RemoveMesh
+  - changeTag_Layer
+  - HomingMissile
+  - TakeDamage
+  - Explode
+  - RPC_Damage
+  - BeginNewRound
+  - Team1
+  - Team2
+  - TeamCheck
+  - SetTeamID
+  - RPC_TeamScore
+  - RPC_RoundStarted
+  - RPC_nextRound
+  - RPC_TeamWonCheck
+  - RPC_TeamScore1
+  - timerAsync
+  - CountDownTimerUI
+  - RPC_SpawnWave
+  - RPC_SpawnEnemy
+  - RPC_DestroyTrail
+  - RPC_Destroy
+  - LightWallsTrails
+  - teamPlayers
+  - UseLightwall
+  - ChangeTrailParent
+  - SpawningTrailRend
+  - RPC_ChangeBikeClr
+  - ChangeClr
+  - teamPlayersDestroy
+  - RPC_ChangeTrailColor
+  - TakeDamageAi
+  - ChangeClrOneVsOne
+  - ChangeTeamColor
+  - RPC_Changelayer
+  - RPC_AnimateEnable
+  - RPC_MasterChanged
+  - RPC_ChangeState
+  - EnemiesCount
+  - ResetPlayer
+  - TeammateCount
+  - RPC_ChangeTeam
+  - RPC_CreateObject_MasterClient
+  - RPC_SpawnPlayer
+  - ResetTime
+  - TeamWon
+  DisableAutoOpenWizard: 1
+  ShowSettings: 1
+  DevRegionSetOnce: 1

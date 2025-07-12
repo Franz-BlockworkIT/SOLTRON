@@ -1,0 +1,100 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
+
+public class AiHealth : MonoBehaviour
+{
+    public int maxHealth = 100;
+    public int currentHealth;
+
+    [SerializeField] Animator anim;
+
+    Ai aiCont;
+    public bool defeated;
+    PhotonView PV;
+    private void Awake()
+    {
+        
+        anim = GetComponent<Animator>();
+        aiCont = GetComponent<Ai>();
+        PV = GetComponent<PhotonView>();
+        
+        
+    }
+    private void Start()
+    {
+        currentHealth = maxHealth;
+        
+    }
+    private void Update()
+    {
+
+        if (RoundSystem.RS.RoundStarted)
+        {
+            defeated = true;
+            PV.RPC("RPC_Destroy", RpcTarget.AllBuffered);
+            PhotonNetwork.Destroy(gameObject);
+        }
+        if (currentHealth <= 0)
+        {
+            defeated = true;
+            currentHealth = 0;
+        }
+        
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Player Trail") && gameObject.tag == "Team2")
+        {
+            StartCoroutine("WaitForSpeed");
+            TakeDamage(maxHealth / 4);
+
+        }
+
+        if (collision.gameObject.tag == "Team2" || collision.gameObject.tag == "Team1")
+        {
+
+            TakeDamage(maxHealth / 10);
+
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        
+
+        if (currentHealth < 0)
+        {
+            currentHealth = 0;
+            aiCont.canMove = false;
+            anim.enabled = true;
+            Destroy(gameObject, 4);
+            
+        }
+
+
+    }
+
+    
+
+
+    IEnumerator WaitForSpeed()
+    {
+        yield return new WaitForSeconds(1);
+        aiCont.speed = aiCont.maxSpeed;
+
+    }
+    [PunRPC]
+
+    void RPC_Destroy()
+    {
+        Destroy(gameObject);
+        return;
+    }
+}

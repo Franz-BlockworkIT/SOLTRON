@@ -1,0 +1,588 @@
+using Photon.Pun;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Ai : MonoBehaviour
+{
+
+    public bool canMove = true;
+    [SerializeField] public float speed = 10f, maxSpeed = 10f;
+
+    public GameManager stop;
+
+
+    public int BotRandomPositionRadius = 10;
+
+    public Vector3 moveSpot;
+
+
+    
+    float forwardAccel;
+
+    public float rotationSpeed = 50;
+    public float wheelRotationSpeed = 10;
+
+    [SerializeField] GameObject[] wheelsToRotate;
+
+    public bool grounded;
+
+    public LayerMask whatIsGround;
+
+    public float groundRayLength = .5f;
+    public Transform groundRayPoint;
+
+    public float gravityForce = 10f;
+
+    RaycastHit hit2;
+
+    Vector3 collision = Vector3.zero;
+
+    public Material bikeMat;
+
+    Rigidbody rb;
+    LightWallsAI trails;
+
+
+    public float force = 5;
+
+
+    public float radius;
+
+    [Range(0, 360)]
+    public float angle;
+    public float detectionRayLength = 10;
+
+    public LayerMask targetMask;
+    public LayerMask obstructionMask;
+
+    bool ObjDetected;
+
+    public bool changeMoveSpot;
+
+    Ray ray;
+
+
+    float changePos = 4;
+
+    private void Awake()
+    {
+        
+        stop = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        bikeMat = GetComponent<MeshRenderer>().material;
+
+    }
+    private void Start()
+    {
+        
+        moveSpot = GetNewPosition();
+        rb = GetComponent<Rigidbody>();
+
+        StartCoroutine(FOVRoutine());
+
+        speed = maxSpeed;
+
+        waitForNextEmp = Random.Range(2, 5);
+    }
+
+    private void Update()
+    {
+        if (stop.canMove)
+        {
+            if (canMove)
+            {
+                WatchYouStep();
+                GetToStopping();
+
+                changePos -= Time.deltaTime;
+
+                if(changePos <= 0)
+                {
+                    moveSpot = GetNewPosition();
+                    changePos = 4;
+                }
+                if (changeMoveSpot)
+                    StartCoroutine(ChangeMoveSpot());
+
+
+                // For Turning motion Of a Body
+                Quaternion bodyRotation = transform.rotation * Quaternion.Euler(0f, 0f, rb.velocity.magnitude * 30);
+                bikeBody.rotation = Quaternion.Lerp(bikeBody.rotation, bodyRotation, 0.1f);
+
+                //-------------------------//
+
+                WheelSpinning();
+
+                Attack();
+            }
+            else
+            {
+                if(trails != null)
+                    trails.enabled = false;
+            }
+        }
+        else
+            return;
+
+        HomingMissile();
+
+    }
+
+    [SerializeField] private Transform bikeBody;
+
+
+
+    private void FixedUpdate()
+    {
+
+        if (stop.canMove)
+        {
+            if (canMove)
+            {
+                grounded = false;
+                RaycastHit hit;
+
+                if (Physics.Raycast(groundRayPoint.position, -transform.up, out hit, groundRayLength, whatIsGround))
+                {
+                    grounded = true;
+
+                    transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                }
+
+
+                if (grounded)
+                {
+                    BotMove();
+                    rb.drag = 1;
+                }
+                else
+                {
+                    rb.drag = 0.1f;
+                    rb.AddForce(Vector3.up * -gravityForce * 100f);
+                }
+
+
+                ray = new Ray(groundRayPoint.transform.position, transform.forward);
+                Debug.DrawLine(transform.position, hit2.point, Color.white);
+
+
+                if (Physics.Raycast(ray, out hit2, 80))
+                {
+                    collision = hit2.point;
+                    Debug.DrawRay(transform.position, collision, Color.blue);
+                    if (hit2.collider.tag == "Wall" && changeMoveSpot)
+                        moveSpot = transform.forward * -hit2.point.z;
+
+                    if (gameObject.tag == "Team2")
+                    {
+                        if (hit2.collider.gameObject.layer == LayerMask.NameToLayer("Player Trail"))
+                        {
+                            moveSpot = transform.forward * -hit2.point.z;
+
+                        }
+                    }
+                    else if (gameObject.tag == "Team1")
+                    {
+                        if (hit2.collider.gameObject.layer == LayerMask.NameToLayer("Enemy Trail"))
+                        {
+                            moveSpot = transform.forward * -hit2.point.z;
+
+                        }
+                    }
+
+                }
+            }
+        }
+        else
+            return;
+    }
+
+
+
+
+
+    #region Bot Movement
+    // ---------------------- Bot Movement --------------------- //
+    public void BotMove()
+    {
+        
+        
+        float curspeed = speed;
+
+        forwardAccel = curspeed * Time.smoothDeltaTime;
+        transform.Translate(transform.forward * curspeed * Time.smoothDeltaTime, Space.World);
+
+       
+
+
+    }
+
+    private void WheelSpinning()
+    {
+
+        
+
+        foreach (GameObject wheel in wheelsToRotate)
+        {
+            wheel.transform.Rotate(Time.deltaTime * speed * wheelRotationSpeed, 0, 0, Space.Self);
+        }
+    }
+
+    Vector3 GetNewPosition()
+    {
+        
+        Vector3 newPosition = new Vector3(Random.insideUnitSphere.x * radius, transform.position.y,Random.insideUnitSphere.z * radius) ;
+
+        return newPosition;
+    }
+
+    void GetToStopping()
+    {
+        //transform.position += transform.forward * speed * Time.deltaTime;
+
+        rb.AddForce(transform.forward * force * Time.deltaTime);
+
+        if(rb.velocity.magnitude > speed)
+        {
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed);
+        }
+
+        
+
+        if(Vector3.Distance(transform.position, moveSpot) <= speed)
+        {
+                moveSpot = GetNewPosition();
+        }
+    }
+
+    void WatchYouStep()
+    {
+        Vector3 targetDirection = moveSpot - transform.position;
+        
+        Quaternion newDirection = Quaternion.LookRotation(targetDirection);
+        transform.rotation = Quaternion.Lerp(transform.rotation,newDirection,rotationSpeed * Time.deltaTime);
+
+    }
+
+    // --------------------------------------------------------- //
+
+    #endregion
+
+
+    #region Coroutine Functions
+    // ---------- Coroutines Funtions--------- //
+
+
+    IEnumerator FOVRoutine()
+    {
+
+
+        WaitForSeconds wait = new WaitForSeconds(.3f);
+
+        while (true)
+        {
+            yield return wait;
+            FOVCheck();
+        }
+    }
+
+    IEnumerator ChangeMoveSpot()
+    {
+        moveSpot = transform.forward * -hit2.point.z;
+
+        changeMoveSpot = false;
+        yield return new WaitForSeconds(3f);
+    }
+
+
+    IEnumerator WaitForSpeed()
+    {
+        yield return new WaitForSeconds(1);
+        speed = maxSpeed;
+
+    }
+
+
+    // -------------------------------------//
+
+    #endregion
+
+
+    #region Field OF View
+    // ------------- Field Of View Check ------------- //
+    void FOVCheck()
+    {
+        Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius,targetMask);
+
+        if (rangeChecks.Length != 0)
+        {
+            Transform target = rangeChecks[0].transform;
+            Vector3 directionToTarget = (target.position - transform.position).normalized;
+            
+
+            if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
+            {
+
+                float distanceToTarget = Vector3.Distance(transform.position, target.position);
+                ObjDetected = Physics.Raycast(transform.position, directionToTarget, detectionRayLength);
+
+                if (ObjDetected)
+                {
+                    
+                    moveSpot = GetNewPosition();
+
+                }
+
+            }
+            
+        }
+    }
+    // -------------------------------------------------//
+
+    #endregion
+
+
+
+    #region Attacks
+    // --------------- Rocket , EMP Bomb ------------- //
+
+    [Header("Attack")]
+    // Rockets //
+
+    public float cooldownTime = 2;
+    private float nextFireTime;
+    [SerializeField] GameObject rocketPrefab;
+    [SerializeField] GameObject[] spawnPos;
+
+    int MaxRockets = 3;
+
+    // ------------------------ //
+
+    // Grenade //
+    public int waitForNextEmp = 4;
+    private int nextDropTime;
+    [SerializeField] GameObject grenade;
+    [SerializeField] GameObject grenadeSpawnPos;
+
+    // -------------------------//
+
+
+
+    public void Attack()
+    {
+
+        if (Physics.Raycast(ray, out hit2, 100))
+        {
+            if (gameObject.tag == "Team1")
+            {
+                if (hit2.collider.tag == "Team2")
+                {
+                    if (Time.time > nextFireTime)
+                    {
+                        if (MaxRockets > 0)
+                            FireRockets();
+
+                    }
+                }
+            }
+            else if (gameObject.tag == "Team2")
+            {
+                if (hit2.collider.tag == "Team1")
+                {
+                    if (Time.time > nextFireTime)
+                    {
+                        if (MaxRockets > 0)
+                            FireRockets();
+
+                    }
+                }
+            }
+
+        }
+
+
+        DeployBomb();
+
+
+
+
+
+    }
+
+    [SerializeField] Collider[] findEnemy;
+    Transform _target;
+    void FireRockets()
+    {
+
+
+
+
+
+        GameObject rocket = PhotonNetwork.Instantiate("Weapons/EnemyRocket", spawnPos[Random.Range(0, spawnPos.Length)].transform.position, spawnPos[Random.Range(0, spawnPos.Length)].transform.rotation);
+        rocket.GetComponent<Rocket>().rocketSpeed = speed * 1.5f;
+
+        rocket.layer = gameObject.layer;
+
+        rocket.GetComponent<Rocket>()._target = _target;
+
+
+
+        nextFireTime = Time.time + cooldownTime;
+    }
+
+
+
+    Collider[] EnemyCheckForBomb;
+    void DeployBomb()
+    {
+
+        
+        if (gameObject.tag == "Team1")
+        {
+            EnemyCheckForBomb = Physics.OverlapSphere(transform.position, 30, LayerMask.GetMask("Team2"));
+
+            if (EnemyCheckForBomb.Length != 0)
+            {
+
+                if (Time.time > nextDropTime)
+                {
+
+                    PhotonNetwork.Instantiate("Weapons/Player Emp Gernade", grenadeSpawnPos.transform.position, transform.rotation);
+
+                    nextDropTime = (int)Time.time + waitForNextEmp;
+
+
+                }
+            }
+            
+            
+        }
+
+
+
+
+        else if (gameObject.tag == "Team2")
+        {
+            EnemyCheckForBomb = Physics.OverlapSphere(transform.position, 30, LayerMask.GetMask("Team1"));
+
+
+
+
+            if(EnemyCheckForBomb.Length != 0)
+            {
+
+                    if (Time.time > nextDropTime)
+                    {
+
+                        PhotonNetwork.Instantiate("Weapons/Emp GernadeEnemy", grenadeSpawnPos.transform.position, transform.rotation);
+
+                        nextDropTime = (int)Time.time + waitForNextEmp;
+
+
+                    }
+            }
+                
+            }
+            
+
+
+        }
+
+    
+    void HomingMissile()
+    {
+
+        if (findEnemy.Length == 0)
+        {
+            
+            _target = null;
+        }
+        
+
+
+        // Team 1 //
+        if (gameObject.tag == "Team1")
+        {
+            findEnemy = Physics.OverlapSphere(transform.position + (transform.forward * 30), 30, LayerMask.GetMask("Team2"));
+
+            if (findEnemy.Length != 0)
+            {
+                _target = findEnemy[0].transform;
+                
+            }
+
+            try
+            {
+                if (findEnemy[0].tag != "Team2")
+                    _target = null;
+
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                print("Searching Target...");
+            }
+        }
+
+        // Team 2 //
+        else if (gameObject.tag == "Team2")
+        {
+            findEnemy = Physics.OverlapSphere(transform.position + (transform.forward * 30), 30, LayerMask.GetMask("Team1"));
+
+            if (findEnemy.Length != 0)
+            {
+                _target = findEnemy[0].transform;
+               
+            }
+            try
+            {
+                if (findEnemy[0].tag != "Team1")
+                    _target = null;
+
+            }
+            catch (System.IndexOutOfRangeException)
+            {
+                print("Searching Target...");
+            }
+        }
+    }
+    // ----------------------------------------------- //
+
+
+    #endregion
+
+
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag != "Ground")
+        {
+        changeMoveSpot = true;
+            speed = 0;
+            if(changeMoveSpot)
+                StartCoroutine(ChangeMoveSpot());
+
+
+            StartCoroutine("WaitForSpeed");
+
+            
+
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        speed = maxSpeed;
+        changeMoveSpot = false;
+    }
+
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(collision, 10f);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(moveSpot, 5f);
+    }
+}

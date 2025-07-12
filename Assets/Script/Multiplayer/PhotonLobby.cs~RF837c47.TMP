@@ -1,0 +1,115 @@
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine;
+
+
+public class PhotonLobby : MonoBehaviourPunCallbacks
+{
+    public static PhotonLobby lobby;
+    
+
+    public GameObject battleButton;
+    public GameObject cancelButton;
+
+    
+
+
+    private void Awake()
+    {
+        lobby = this;
+    }
+
+    private void Start()
+    {
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        MultilplayerSettings.quickMatch = false;
+        MultilplayerSettings.teamDeathmatch = false;
+        MultilplayerSettings.training = false;
+        MultilplayerSettings.tournament = false;
+
+        MultilplayerSettings.freeToPlay = false;
+        MultilplayerSettings.playToEarn = false;
+        
+    }
+
+    
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Player Has Connected to the Master!");
+        PhotonNetwork.AutomaticallySyncScene = true;
+        battleButton.SetActive(true);
+
+        
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+
+        battleButton.SetActive(false);
+    }
+    public void OnBattleButtonClicked()
+    {
+        Debug.Log("is Master Client : " + PhotonNetwork.IsConnected);
+        battleButton.SetActive(false);
+        cancelButton.SetActive(true);
+        
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.Log("Tried to Join A room and Failed");
+            
+        CreateRoom();
+
+    }
+
+
+    void CreateRoom()
+    {
+        Debug.Log("Trying to create room...");
+        int randomRoomName = Random.Range(0, 10000);
+        if (MultilplayerSettings.teamDeathmatch)
+        {
+            RoomOptions roomOps = new RoomOptions() { IsVisible = true, IsOpen = true, MaxPlayers = (byte)8 };
+            roomOps.PlayerTtl = 60000;
+            PhotonNetwork.CreateRoom("Room" + randomRoomName, roomOps);
+        }
+        else if (MultilplayerSettings.quickMatch)
+        {
+            RoomOptions roomOps = new RoomOptions() { IsVisible = true, IsOpen = true, MaxPlayers = (byte)2 };
+            roomOps.PlayerTtl = 60000;
+        PhotonNetwork.CreateRoom("Room" + randomRoomName, roomOps); 
+        }
+
+
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("Tried To Create a new room but failed, there must be already a room with the same name");
+        CreateRoom();
+    }
+
+
+    public void OnCancelButtonClicked()
+    {
+        Debug.Log("Cancel Btn clicked!");
+        PhotonNetwork.LeaveRoom();
+        PhotonRoom.room.startGame = true;
+        cancelButton.SetActive(false);
+        battleButton.SetActive(true);
+        
+    }
+    
+    
+
+    
+}
