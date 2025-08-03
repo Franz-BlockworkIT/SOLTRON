@@ -1,39 +1,48 @@
-SOLTRON – Blockchain Multiplayer Racing Game
-Overview
-SOLTRON is a real-time multiplayer bike racing game built using Unity and integrated with the Solana blockchain. It features play-to-earn (P2E) mechanics, allowing players to earn cryptocurrency by winning races. The game combines competitive gameplay with decentralized finance, bringing blockchain innovation to traditional mobile gaming.
-Technologies Used
-Unity 2021.x
-C#
-Solana Blockchain Integration (via Solnet SDK)
-Multiplayer Networking (using Photon)
-Smart Contract Integration (P2E token rewards system)
-Wallet Integration: Phantom, Solflare
+# SOLTRON – Blockchain Multiplayer Racing Game
 
-My Role: Team Lead Developer – Hafiz Saad Khawar
-As the Team Lead Developer on the SOLTRON project, I led both technical implementation and team coordination efforts. My key contributions included:
-Leading the development team in creating core multiplayer gameplay, including bike control systems and race logic.
-Overseeing the real-time networking implementation using Photon to enable seamless multiplayer functionality.
-Integrating the Solana blockchain for secure wallet authentication and automated token reward distribution.
-Managing smart contract interactions, ensuring accurate and secure payout handling for winners.
-Designing and approving UI/UX components for wallet connections and multiplayer lobby flows.
-Coordinating sprint planning, code reviews, and maintaining quality assurance standards across the team.
+## 🏁 Overview
 
+**SOLTRON** is a real-time multiplayer bike racing game built using Unity and integrated with the **Solana blockchain**. It features **Play-to-Earn (P2E)** mechanics, allowing players to earn cryptocurrency by winning races. The game blends competitive multiplayer gameplay with blockchain innovation to bring decentralized finance into mobile gaming.
 
-Key Features
-Real-time multiplayer racing with 2–4 players
-Play-to-Earn model: win races to earn crypto rewards
-Secure Solana wallet integration (Phantom, Solflare)
-Decentralized smart contract rewards system
-Competitive leaderboards, game lobbies, and P2E analytics
-Smooth physics and responsive controls for immersive gameplay
+---
 
-How to Run the Project
-Clone the repository:
-git clone https://github.com/Franz-BlockworkIT/SOLTRON
-Open the project in Unity 2021.x
-Configure Solana wallet credentials and RPC endpoints in the project config
-Open MainScene.unity and press Play to launch the multiplayer mode locally
-To test wallet integration, connect with a supported Solana wallet in testnet mode
+## 🔧 Technologies Used
 
-Repository Link
-🔗 GitHub – SOLTRON Multiplayer Game (Blockwork IT)
+- **Unity 2021.x**
+- **C#**
+- **Solana Blockchain Integration** (via [Solnet SDK](https://github.com/bmresearch/Solnet))
+- **Multiplayer Networking** (using [Photon](https://www.photonengine.com/))
+- **Smart Contract Integration** (P2E token rewards system)
+- **Wallet Integration**: Phantom, Solflare
+
+---
+
+## 👨‍💻 My Role: Team Lead Developer – Hafiz Saad Khawar
+
+As the **Team Lead Developer**, I was responsible for both technical architecture and team leadership. Key contributions include:
+
+- Led the development team in implementing core multiplayer gameplay, including **bike control systems** and **race logic**.
+- Oversaw **real-time networking** using Photon for smooth, low-latency multiplayer support.
+- Integrated the **Solana blockchain** for wallet authentication and reward distribution.
+- Managed **smart contract interactions** for secure token payouts.
+- Designed and reviewed UI/UX for wallet connection and multiplayer lobbies.
+- Conducted code reviews, managed sprint planning, and ensured project quality standards.
+
+---
+
+## 🎮 Key Features
+
+- 🔁 Real-time multiplayer racing (2–4 players)
+- 💰 Play-to-Earn: Win races to earn Solana-based crypto rewards
+- 🔐 Secure wallet login via Phantom or Solflare
+- 🔗 Blockchain-based smart contract reward system
+- 🏆 Competitive leaderboards and game lobbies
+- 🏍️ Responsive bike physics for immersive gameplay
+
+---
+
+## 🚀 How to Run the Project
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Franz-BlockworkIT/SOLTRON
