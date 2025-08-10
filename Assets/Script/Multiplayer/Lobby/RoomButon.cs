@@ -1,3 +1,8 @@
+// RoomButon.cs
+// Author: Hafiz Saad Khawar
+// Created: 2024-02-04
+// Description: Controls the UI display and join functionality of individual multiplayer rooms
+//              in the Soltron game lobby using Photon PUN.
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
