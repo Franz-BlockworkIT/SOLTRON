@@ -1,3 +1,11 @@
+// PhotonRoom.cs
+// Author: Hafiz Saad Khawar
+// Created: 2024-02-04
+// Description:
+//   Manages the multiplayer room lifecycle and player state using Photon PUN.
+//   Handles player joining/leaving, team assignment, scene loading,
+//   room UI updates, and delayed game start functionality.
+//   Implements singleton pattern for global access and persists across scenes.
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
