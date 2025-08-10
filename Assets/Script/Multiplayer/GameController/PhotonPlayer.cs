@@ -1,3 +1,7 @@
+// PhotonPlayer.cs
+// Author: Hafiz Saad Khawar
+// Created: 2024-02-04
+// Description: Manages player spawning, team assignment, experience system, and win/lose states in the Soltron multiplayer game using Photon Networking.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
