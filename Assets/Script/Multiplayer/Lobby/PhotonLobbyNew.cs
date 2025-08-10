@@ -1,3 +1,8 @@
+// PhotonLobbyNew.cs
+// Author: Hafiz Saad Khawar
+// Created: 2024-02-04
+// Description: Handles matchmaking and lobby functionality using Photon PUN for Soltron multiplayer game.
+//              Manages joining rooms, creating rooms, cancelling matchmaking, and syncing game modes.
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
