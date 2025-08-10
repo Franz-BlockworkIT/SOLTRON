@@ -1,3 +1,11 @@
+* Author: Hafiz Saad Khawar
+ * Description: 
+ * This ShopUI script manages the in-game shop interface for upgrading bikes.
+ * It uses a local currency named "SolBal" (representing Solana balance) stored in PlayerPrefs.
+ * The SolBal is used to purchase upgrades like engine, tyres, rockets, EMP, and armour.
+ * Note: The SolBal here is a local in-game currency and is not directly connected to the Solana blockchain.
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
