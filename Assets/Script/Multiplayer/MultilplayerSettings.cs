@@ -1,3 +1,9 @@
+// MultilplayerSettings.cs
+// Author: Hafiz Saad Khawar
+// Created: 2024-02-04
+// Description: Singleton class to hold multiplayer game settings such as delay start, 
+//              max players, and scene indexes for menu and multiplayer gameplay. 
+//              Ensures persistence across scene loads.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
