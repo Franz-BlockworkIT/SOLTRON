@@ -1,3 +1,13 @@
+// PhotonLobby.cs
+// Author: Hafiz Saad Khawar
+// Created: 2024-02-04
+// Description:
+//   Manages connection to Photon master server and matchmaking lobby.
+//   Handles connecting players to random rooms or creating new rooms if none are available.
+//   Provides UI button control for starting and cancelling matchmaking.
+//   Supports different multiplayer modes (quick match and team deathmatch) with appropriate room settings.
+//   Uses singleton pattern for easy global access.
+//   Integrates with MultilplayerSettings for mode configuration.
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
