@@ -1,3 +1,5 @@
+//check the wallet condition
+
 using System.Collections;
 using System.Collections.Generic;
 using FullSerializer;
