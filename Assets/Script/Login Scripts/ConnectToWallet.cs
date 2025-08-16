@@ -1,4 +1,38 @@
-//check the wallet condition
+/**************************************************************
+ *  Script: ConnectToWallet.cs
+ *  Author: Hafiz Saad Khawar
+ *  Date:   02/04/23
+ *  
+ *  Description:
+ *  -----------------------------------------------------------
+ *  This Unity MonoBehaviour script manages wallet-based user 
+ *  authentication and data persistence using Firebase as a 
+ *  backend. It connects the player’s wallet address, validates 
+ *  usernames, and stores/retrieves user data such as wallet 
+ *  balances, levels, XP, and achievements. 
+ *  
+ *  Key Features:
+ *  -----------------------------------------------------------
+ *  - Integrates with CryptoReceiver to detect wallet connection 
+ *    and retrieve the wallet address.  
+ *  - Communicates with Firebase Realtime Database to:
+ *      • Check if a user already exists (wallet/username).  
+ *      • Create a new user profile when registering.  
+ *      • Retrieve existing player data and populate PlayerScores.  
+ *      • Update and save user progress back to Firebase.  
+ *  - Handles UI flow for login, username validation, error display, 
+ *    and main game screen transitions.  
+ *  - Syncs player identity with Photon Network for multiplayer 
+ *    nickname usage.  
+ *  
+ *  Usage Notes:
+ *  -----------------------------------------------------------
+ *  • Ensure CryptoReceiver is initialized before calling CheckPlayer().  
+ *  • Firebase databaseURL must be properly configured.  
+ *  • Requires PlayerScores script for syncing player stats and UI.  
+ *  • Designed for use in blockchain-integrated multiplayer games.  
+ *  
+ **************************************************************/
 
 using System.Collections;
 using System.Collections.Generic;
