@@ -1,4 +1,49 @@
-﻿using System.Collections;
+/*
+Author: Hafiz Saad Khawar
+Script: PlayerScores.cs
+
+Description:
+This script manages player authentication, scores, levels, and in-game currency.
+It also handles UI updates for login, registration, and leaderboard displays. 
+Integration with Firebase Realtime Database allows storing and retrieving player data.
+Supports Guest login and Wallet-based users. Photon Networking is used for multiplayer nickname setup.
+
+Key Features:
+1. Authentication:
+   - SignUpUserButton(): Registers new users with email verification.
+   - SignInUserButton(): Authenticates existing users.
+   - PlayAsGuest(): Allows temporary guest accounts with unique ID.
+
+2. Player Data Management:
+   - Tracks playerScore, playerLevel, playerXp, currency balances, bike color, and bike upgrades.
+   - Retrieves and posts data to Firebase Realtime Database using RestClient.
+   - Stores localId and idToken for Firebase authentication.
+
+3. UI Management:
+   - Updates username, scores, and warning messages.
+   - Manages LoginPanel, RegisterPanel, AfterSignIn, and leaderboard content dynamically.
+
+4. Multiplayer Integration:
+   - Uses PhotonNetwork to assign NickName for multiplayer sessions.
+
+5. Serialization:
+   - FullSerializer (fsSerializer) for deserializing JSON responses from Firebase.
+
+6. Guest and Wallet Users:
+   - Supports guest users with temporary localId.
+   - Checks for connected wallet users via CryptoReceiver and ConnectToWallet.
+
+Notes:
+- PlayerScores is a singleton accessible via _PS.
+- Assumes other scripts like User, CryptoReceiver, ConnectToWallet, and Wallet integration are implemented.
+- Database URL and AuthKey are hardcoded for Firebase REST API.
+
+Usage:
+- Attach this script to a GameObject in your main scene (e.g., GameManager).
+- Assign all UI references in the Inspector.
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using FullSerializer;
 using Proyecto26;
